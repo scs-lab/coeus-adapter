@@ -89,7 +89,7 @@ class TestManager(ABC):
         if hermes_mode == 'kBypass':
             env['HERMES_ADAPTER_MODE'] = 'kBypass'
 
-        env['LD_LIBRARY_PATH'] = f'{self.CMAKE_BINARY_DIR}/bin'
+        env['LD_LIBRARY_PATH'] = f'{self.CMAKE_BINARY_DIR}/bin:{os.getenv("LD_LIBRARY_PATH")}'
 
         return SpawnInfo(nprocs=nprocs,
                          ppn=ppn,
@@ -128,7 +128,7 @@ class TestManager(ABC):
             if callable(getattr(self, attr)):
                 self.tests_[attr] = getattr(self, attr)
 
-    def call(self, test_name):
+    def call(self, test_name): # Maybe add args def call(self, test_name, *args):
         self.set_paths()
         if self.disable_testing:
             return
@@ -136,6 +136,7 @@ class TestManager(ABC):
         if test_name in self.tests_:
             print(f"Running test: {test_name}")
             exit_code = self.tests_[test_name]()
+            #exit_code = self.tests_[test_name](*args)
         else:
             print(f"{test_name} was not found. Available tests: ")
             for i, test in enumerate(self.tests_):

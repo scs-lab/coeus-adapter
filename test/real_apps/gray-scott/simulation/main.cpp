@@ -94,6 +94,7 @@ int main(int argc, char **argv)
     if (settings.restart)
     {
         restart_step = ReadRestart(comm, settings, sim, io_ckpt);
+
         io_main.SetParameter("AppendAfterSteps",
                              std::to_string(restart_step / settings.plotgap));
     }
